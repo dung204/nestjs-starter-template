@@ -1,13 +1,12 @@
-import * as bcrypt from 'bcrypt';
-
 export class PasswordUtils {
-  private static saltOrRounds = 10;
-
   public static hashPassword(password: string) {
-    return bcrypt.hashSync(password, this.saltOrRounds);
+    return Bun.password.hashSync(password, {
+      algorithm: 'bcrypt',
+      cost: 12,
+    });
   }
 
   public static isMatchPassword(password: string, hashedPassword: string) {
-    return bcrypt.compareSync(password, hashedPassword);
+    return Bun.password.verifySync(password, hashedPassword, 'bcrypt');
   }
 }

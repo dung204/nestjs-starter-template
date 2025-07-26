@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { config } from 'dotenv';
-import { DataSourceOptions } from 'typeorm';
+import type { DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-
-config({
-  path: ['.env.local', '.env'],
-});
 
 @Injectable()
 export class ConfigService {
