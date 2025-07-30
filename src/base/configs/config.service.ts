@@ -19,7 +19,7 @@ export class ConfigService {
     password: process.env['DB_PASSWORD'],
     database: process.env['DB_DATABASE_NAME'],
     synchronize: false,
-    entities: ['dist/**/*.entity.js'],
+    entities: ['src/**/*.entity.ts'],
     migrations: ['dist/**/database/migrations/*.js'],
     migrationsRun: process.env['NODE_ENV'] === 'production',
     namingStrategy: new SnakeNamingStrategy(),

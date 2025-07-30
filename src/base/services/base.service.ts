@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
-import { User } from '@/modules/users';
+import { User } from '@/modules/users/entities/user.entity';
 
 import { PaginationDto, QueryDto } from '../dtos';
 import { BaseEntity } from '../entities';
@@ -30,30 +30,30 @@ export class BaseService<Entity extends BaseEntity> {
   }
 
   async find(options: CustomFindManyOptions<Entity> = {}, currentUser?: User) {
-    const preProcessedOptions = this.preFind(options, currentUser);
+    const preProcessedOptions = await this.preFind(options, currentUser);
     const data = await this.repository.find(preProcessedOptions);
     return this.postFind(data, preProcessedOptions, currentUser);
   }
 
   async findOne(options: FindManyOptions<Entity> = {}, currentUser?: User) {
-    const preProcessedOptions = this.preFindOne(options, currentUser);
+    const preProcessedOptions = await this.preFindOne(options, currentUser);
     const data = await this.repository.findOne(preProcessedOptions);
     return this.postFindOne(data, preProcessedOptions, currentUser);
   }
 
   async count(options: CustomFindManyOptions<Entity> = {}, currentUser?: User) {
-    const preProcessedOptions = this.preCount(options, currentUser);
+    const preProcessedOptions = await this.preCount(options, currentUser);
     return this.repository.count(preProcessedOptions);
   }
 
   async createOne(userId: string, createDto: DeepPartial<Entity>) {
-    const doc = this.preCreateOne(userId, createDto);
+    const doc = await this.preCreateOne(userId, createDto);
     const record = await this.repository.save(doc);
     return this.postCreateOne(record, createDto);
   }
 
   async create(userId: string, createDtos: DeepPartial<Entity>[]) {
-    const docs = this.preCreate(userId, createDtos);
+    const docs = await this.preCreate(userId, createDtos);
     const records = await this.repository.save(docs);
     return this.postCreate(records, createDtos);
   }
@@ -64,7 +64,7 @@ export class BaseService<Entity extends BaseEntity> {
       throw new NotFoundException('Record(s) not found!');
     }
 
-    const doc = this.preUpdate(userId, updateDto, oldRecords, options);
+    const doc = await this.preUpdate(userId, updateDto, oldRecords, options);
     const newRecords = await this.repository.save(
       oldRecords.map(
         (record) => {
@@ -87,7 +87,7 @@ export class BaseService<Entity extends BaseEntity> {
     userId: string,
     options?: FindManyOptions<Entity>,
   ) {
-    this.preSoftDelete(userId, options);
+    await this.preSoftDelete(userId, options);
     const deletedRecords = await this.update(
       userId,
       {
@@ -101,7 +101,7 @@ export class BaseService<Entity extends BaseEntity> {
   }
 
   async restore(userId: string, options?: FindManyOptions<Entity>) {
-    this.preRestore(userId, options);
+    await this.preRestore(userId, options);
     const deletedRecords = await this.update(
       userId,
       {
@@ -116,14 +116,14 @@ export class BaseService<Entity extends BaseEntity> {
 
   /* ---------- Pre-processing functions ---------- */
 
-  protected preFind(
+  protected async preFind(
     options: CustomFindManyOptions<Entity>,
     /**
      * This arg is not used in the base class,
      * but can be used in derived class
      */
     _currentUser?: User,
-  ): CustomFindManyOptions<Entity> {
+  ): Promise<CustomFindManyOptions<Entity>> {
     // TODO: Add WHERE, ORDER, LIMIT, OFFSET clause
     const { skip, take } = this.getPaginationProps(options);
     const order = this.getOrderProps(options);
@@ -138,25 +138,25 @@ export class BaseService<Entity extends BaseEntity> {
     };
   }
 
-  protected preFindOne(
+  protected async preFindOne(
     options: FindOneOptions<Entity>,
     /**
      * This arg is not used in the base class,
      * but can be used in derived class
      */
     _currentUser?: User,
-  ): FindOneOptions<Entity> {
+  ): Promise<FindOneOptions<Entity>> {
     return options;
   }
 
-  protected preCount(
+  protected async preCount(
     options: CustomFindManyOptions<Entity>,
     /**
      * This arg is not used in the base class,
      * but can be used in derived class
      */
     _currentUser?: User,
-  ): CustomFindManyOptions<Entity> {
+  ): Promise<CustomFindManyOptions<Entity>> {
     const where = this.getFilterProps(options);
     return {
       ...options,
@@ -164,7 +164,7 @@ export class BaseService<Entity extends BaseEntity> {
     };
   }
 
-  protected preCreateOne(userId: string, createDto: any): DeepPartial<Entity> {
+  protected async preCreateOne(userId: string, createDto: any): Promise<DeepPartial<Entity>> {
     return {
       ...createDto,
       createUserId: userId,
@@ -172,7 +172,7 @@ export class BaseService<Entity extends BaseEntity> {
     };
   }
 
-  protected preCreate(userId: string, createDtos: any[]): DeepPartial<Entity>[] {
+  protected async preCreate(userId: string, createDtos: any[]): Promise<DeepPartial<Entity>[]> {
     return createDtos.map((dto) => ({
       ...dto,
       createUserId: userId,
@@ -180,7 +180,7 @@ export class BaseService<Entity extends BaseEntity> {
     }));
   }
 
-  protected preUpdate(
+  protected async preUpdate(
     userId: string,
     updateDto: any,
     /**
@@ -193,14 +193,14 @@ export class BaseService<Entity extends BaseEntity> {
      * but can be used in derived class
      */
     _options?: FindManyOptions<Entity>,
-  ): QueryDeepPartialEntity<Entity> {
+  ): Promise<QueryDeepPartialEntity<Entity>> {
     return {
       ...updateDto,
       updateUserId: userId,
     };
   }
 
-  protected preSoftDelete(
+  protected async preSoftDelete(
     /**
      * This arg is not used in the base class,
      * but can be used in derived class
@@ -213,7 +213,7 @@ export class BaseService<Entity extends BaseEntity> {
     _options?: FindManyOptions<Entity>,
   ) {}
 
-  protected preRestore(
+  protected async preRestore(
     /**
      * This arg is not used in the base class,
      * but can be used in derived class
@@ -253,7 +253,7 @@ export class BaseService<Entity extends BaseEntity> {
     };
   }
 
-  protected postFindOne(
+  protected async postFindOne(
     data: Entity | null,
     /**
      * This arg is not used in the base class,
@@ -269,7 +269,7 @@ export class BaseService<Entity extends BaseEntity> {
     return data;
   }
 
-  protected postCreateOne(
+  protected async postCreateOne(
     record: Entity,
     /**
      * This arg is not used in the base class,
@@ -291,7 +291,7 @@ export class BaseService<Entity extends BaseEntity> {
     return records;
   }
 
-  protected postUpdate(
+  protected async postUpdate(
     newRecords: Entity[],
     /**
      * This arg is not used in the base class,
@@ -312,11 +312,11 @@ export class BaseService<Entity extends BaseEntity> {
     return newRecords;
   }
 
-  protected postSoftDelete(deletedRecords: Entity[], _options?: FindManyOptions<Entity>) {
+  protected async postSoftDelete(deletedRecords: Entity[], _options?: FindManyOptions<Entity>) {
     return deletedRecords;
   }
 
-  protected postRestore(restoredRecords: Entity[], _options?: FindManyOptions<Entity>) {
+  protected async postRestore(restoredRecords: Entity[], _options?: FindManyOptions<Entity>) {
     return restoredRecords;
   }
 

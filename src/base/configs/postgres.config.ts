@@ -2,4 +2,4 @@ import { DataSource } from 'typeorm';
 
 import { configs } from './config.service';
 
-export const dataSource = new DataSource(configs.POSTGRES);
+export default new DataSource(configs.POSTGRES);

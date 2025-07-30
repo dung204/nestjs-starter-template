@@ -2,7 +2,7 @@ import { ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
-import { User } from '@/modules/users';
+import { User } from '@/modules/users/entities/user.entity';
 
 import { IS_ADMIN_KEY } from '../decorators/admin.decorator';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';

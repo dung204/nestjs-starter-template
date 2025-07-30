@@ -14,7 +14,8 @@ import { IsNull, Not } from 'typeorm';
 
 import { ApiSuccessResponse } from '@/base/decorators';
 import { QueryDto } from '@/base/dtos';
-import { Admin, CurrentUser } from '@/modules/auth';
+import { Admin } from '@/modules/auth/decorators/admin.decorator';
+import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 
 import { DeletedUserProfileDto, UpdateUserDto, UserProfileDto } from '../dtos/user.dtos';
 import { User } from '../entities/user.entity';

@@ -1,20 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Redis } from 'ioredis';
+import { RedisClient } from 'bun';
 
 import { configs } from '@/base/configs/config.service';
 
 @Injectable()
 export class RedisService {
-  private readonly redis: Redis;
+  private readonly redis: RedisClient;
   private readonly logger = new Logger(RedisService.name);
 
   constructor() {
-    const { host, port, ...redisConfigs } = configs.REDIS;
-    this.redis = new Redis(port, host, {
-      ...redisConfigs,
-      retryStrategy: (times) => Math.min(times * 2000, 10000),
-      maxRetriesPerRequest: 10,
-    });
+    const { host, port, username, password } = configs.REDIS;
+    this.redis = new RedisClient(`redis://${username}:${password}@${host}:${port}`);
   }
 
   async set(key: string, value: string, ttl?: number) {
@@ -45,25 +41,6 @@ export class RedisService {
     try {
       this.logger.log(`String: Delete key ${key}`);
       return await this.redis.del(key);
-    } catch (e) {
-      this.logger.error(e);
-      throw e;
-    }
-  }
-
-  async delMultiPrefix(prefix: string) {
-    try {
-      this.logger.log(`All: Delete multi key with prefix ${prefix}`);
-      const keys = [];
-      let cursor = '0';
-
-      do {
-        const result = await this.redis.scan(cursor, 'MATCH', `${prefix}*`, 'COUNT', 100);
-        cursor = result[0];
-        keys.push(...result[1]);
-      } while (cursor !== '0');
-      if (keys.length === 0) return;
-      await this.redis.del(...keys);
     } catch (e) {
       this.logger.error(e);
       throw e;

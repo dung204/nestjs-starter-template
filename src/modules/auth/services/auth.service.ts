@@ -12,7 +12,8 @@ import { configs } from '@/base/configs';
 import { RedisService } from '@/base/database';
 import { BaseService } from '@/base/services';
 import { PasswordUtils } from '@/base/utils/password.utils';
-import { User, UsersService } from '@/modules/users';
+import { User } from '@/modules/users/entities/user.entity';
+import { UsersService } from '@/modules/users/services/users.service';
 
 import { JwtPayloadDto, LoginDto, LoginSuccessDto, RegisterDto } from '../dtos/auth.dtos';
 import { Account } from '../entities/account.entity';

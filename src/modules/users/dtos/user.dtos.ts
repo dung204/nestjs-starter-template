@@ -3,7 +3,7 @@ import { Exclude, Expose, Transform, plainToInstance } from 'class-transformer';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 import { SwaggerExamples } from '@/base/constants';
-import { Role } from '@/modules/auth';
+import { Role } from '@/modules/auth/enums/role.enum';
 
 import { User } from '../entities/user.entity';
 import { Gender } from '../enums/gender.enum';
@@ -27,6 +27,8 @@ export class UserProfileDto {
 
   @ApiProperty({
     description: 'The role of the user',
+    enum: Role,
+    enumName: 'Role',
     example: SwaggerExamples.ROLE,
   })
   @Expose()
