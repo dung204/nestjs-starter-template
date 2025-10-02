@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { S3Options } from 'bun';
 import type { DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
@@ -32,6 +33,13 @@ export class ConfigService {
     username: process.env['REDIS_USERNAME'] ?? '',
     password: process.env['REDIS_PASSWORD'] ?? '',
   };
+
+  STORAGE = {
+    accessKeyId: process.env['STORAGE_ACCESS_KEY'],
+    secretAccessKey: process.env['STORAGE_SECRET_KEY'],
+    endpoint: process.env['STORAGE_ENDPOINT'],
+    bucket: process.env['STORAGE_BUCKET'],
+  } satisfies S3Options;
 }
 
 export const configs = new ConfigService();
