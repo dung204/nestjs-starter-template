@@ -10,4 +10,5 @@ const config = {
   },
 };
 
+// biome-ignore lint/style/noDefaultExport: default export required by commitlint
 export default config;

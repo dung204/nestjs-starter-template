@@ -1,6 +1,6 @@
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { StorageDriver, initializeTransactionalContext } from 'typeorm-transactional';
+import { initializeTransactionalContext, StorageDriver } from 'typeorm-transactional';
 
 import { configSwagger, configs } from '@/base/configs';
 import { StripUndefinedPipe } from '@/base/pipes';
@@ -28,7 +28,7 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
     }),
-    new StripUndefinedPipe(),
+    new StripUndefinedPipe()
   );
 
   await app.listen(configs.APP_PORT, () => {

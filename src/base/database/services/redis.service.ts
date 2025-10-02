@@ -1,5 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { RedisClient } from 'bun';
+
+import { Injectable, Logger } from '@nestjs/common';
 
 import { configs } from '@/base/configs/config.service';
 

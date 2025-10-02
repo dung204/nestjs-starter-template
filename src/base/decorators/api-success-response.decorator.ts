@@ -1,4 +1,5 @@
-import { Type, applyDecorators } from '@nestjs/common';
+/** biome-ignore-all lint/suspicious/noExplicitAny: any is fine here */
+import { applyDecorators, Type } from '@nestjs/common';
 import { ApiExtraModels, ApiResponse, ApiResponseSchemaHost, getSchemaPath } from '@nestjs/swagger';
 
 import { SwaggerExamples } from '../constants';
@@ -69,6 +70,6 @@ export const ApiSuccessResponse = <DataDto extends Type<any>>({
           }),
         },
       },
-    }),
+    })
   );
 };

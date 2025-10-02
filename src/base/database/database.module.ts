@@ -2,6 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { configs } from '../configs/config.service';
+
 import { RedisService } from './services/redis.service';
 
 @Global()

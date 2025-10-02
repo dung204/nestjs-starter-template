@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+
 import {
   ConflictException,
   Injectable,
@@ -6,7 +8,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { randomUUID } from 'crypto';
 
 import { configs } from '@/base/configs';
 import { RedisService } from '@/base/database';
@@ -29,7 +30,7 @@ export class AuthService extends BaseService<Account> {
     protected readonly repository: AccountRepository,
     private readonly redisService: RedisService,
     private readonly jwtService: JwtService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersService
   ) {
     const logger = new Logger(AuthService.name);
     super(repository, logger);
@@ -160,7 +161,7 @@ export class AuthService extends BaseService<Account> {
     await this.redisService.set(
       `REFRESH_TOKEN_${payload.sub}`,
       refreshToken,
-      this.REFRESH_EXPIRATION_TIME,
+      this.REFRESH_EXPIRATION_TIME
     );
 
     return {

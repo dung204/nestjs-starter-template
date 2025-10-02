@@ -1,5 +1,6 @@
-import { Provider } from '@nestjs/common';
 import { S3Client } from 'bun';
+
+import { Provider } from '@nestjs/common';
 
 import { configs } from '@/base/configs';
 

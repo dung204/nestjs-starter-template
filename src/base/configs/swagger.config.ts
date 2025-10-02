@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { INestApplication } from '@nestjs/common';
 import { DiscoveryService } from '@nestjs/core';
 import {
@@ -36,11 +35,11 @@ export function configSwagger(app: INestApplication) {
         const controllerPath = Reflect.getMetadata(PATH_KEY, controller.metatype);
         const controllerResponses = Reflect.getMetadata(
           SWAGGER_API_RESPONSE_KEY,
-          controller.metatype,
+          controller.metatype
         );
         const controllerApiConsumes: string[] = Reflect.getMetadata(
           SWAGGER_API_CONSUMES_KEY,
-          controller.metatype,
+          controller.metatype
         );
 
         // Applying class decorators
@@ -50,7 +49,7 @@ export function configSwagger(app: INestApplication) {
         // Applying method decorators
         const controllerClass = controller.metatype.prototype;
         const methods = Object.getOwnPropertyNames(controllerClass).filter(
-          (method) => method !== 'constructor',
+          (method) => method !== 'constructor'
         );
 
         for (const method of methods) {
@@ -58,15 +57,15 @@ export function configSwagger(app: INestApplication) {
           const isRouteAdmin = Reflect.getMetadata(IS_ADMIN_KEY, controllerClass[method]);
           const apiOperation = Reflect.getMetadata(
             SWAGGER_API_OPERATION_KEY,
-            controllerClass[method],
+            controllerClass[method]
           );
           const routeResponses = Reflect.getMetadata(
             SWAGGER_API_RESPONSE_KEY,
-            controllerClass[method],
+            controllerClass[method]
           );
           const routeApiConsumes: string[] = Reflect.getMetadata(
             SWAGGER_API_CONSUMES_KEY,
-            controllerClass[method],
+            controllerClass[method]
           );
           const methodDecoratorParams = [
             controllerClass,
@@ -75,7 +74,7 @@ export function configSwagger(app: INestApplication) {
           ] as const;
 
           ApiConsumes(...(routeApiConsumes || controllerApiConsumes || API_CONSUMES_MIME_TYPES))(
-            ...methodDecoratorParams,
+            ...methodDecoratorParams
           );
           ApiInternalServerErrorResponse({
             description: 'Internal Server Error',
@@ -90,7 +89,7 @@ export function configSwagger(app: INestApplication) {
             if (apiOperation) {
               const { summary, ...apiOperationMetadata } = apiOperation;
               ApiOperation({
-                summary: (summary?.trim() ?? '') + ` (for ${Role.ADMIN} only)`,
+                summary: `${summary?.trim() ?? ''} (for ${Role.ADMIN} only)`,
                 ...apiOperationMetadata,
               })(...methodDecoratorParams);
             }
@@ -124,7 +123,7 @@ export function configSwagger(app: INestApplication) {
           type: 'http',
           in: 'Header',
         },
-        'JWT',
+        'JWT'
       )
       .build();
 

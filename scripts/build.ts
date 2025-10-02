@@ -1,4 +1,4 @@
-import { $, Glob, build } from 'bun';
+import { $, build, Glob } from 'bun';
 
 await $`rm -rf dist`;
 
@@ -12,7 +12,7 @@ const optionalRequirePackages = [
 ];
 
 const migrationFileNames = Array.from(
-  new Glob('./src/base/database/migrations/*.ts').scanSync(),
+  new Glob('./src/base/database/migrations/*.ts').scanSync()
 ).map((name) => name.replaceAll(/\\/g, '/'));
 
 const result = await build({

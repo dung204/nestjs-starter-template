@@ -4,6 +4,7 @@ import { Transform } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
 
 import { SwaggerExamples } from '../constants';
+
 import { IsOrderParams } from './is-order-params.decorator';
 
 export function OrderParams(validFields: string[]) {
@@ -21,6 +22,6 @@ export function OrderParams(validFields: string[]) {
     IsOptional(),
     IsString({ each: true }),
     IsOrderParams(validFields),
-    Transform(({ value }) => (typeof value === 'string' ? [value] : value)),
+    Transform(({ value }) => (typeof value === 'string' ? [value] : value))
   );
 }

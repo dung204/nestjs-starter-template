@@ -11,8 +11,8 @@ import { AuthService } from '../services/auth.service';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
-    private readonly authService: AuthService,
-    private readonly usersService: UsersService,
+    readonly authService: AuthService,
+    private readonly usersService: UsersService
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

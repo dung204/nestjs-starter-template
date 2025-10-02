@@ -1,8 +1,8 @@
-import { ValidationOptions, registerDecorator } from 'class-validator';
+import { registerDecorator, ValidationOptions } from 'class-validator';
 
 export function IsOrderParams(
   validFields: string[],
-  validationOptions?: ValidationOptions,
+  validationOptions?: ValidationOptions
 ): PropertyDecorator {
   return (object: object, propertyName: string | symbol) => {
     registerDecorator({
@@ -19,7 +19,7 @@ export function IsOrderParams(
         validate(value: string) {
           const isValueString = typeof value === 'string';
           const isValueMatchPattern = new RegExp(`^${validFields.join('|')}:(ASC|DESC)$`, 'g').test(
-            value,
+            value
           );
           return isValueString && isValueMatchPattern;
         },

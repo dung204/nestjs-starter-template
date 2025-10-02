@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: any is required in this file */
 import { InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import {
   DeepPartial,
@@ -24,7 +25,7 @@ export class BaseService<Entity extends BaseEntity> {
 
   constructor(
     protected readonly repository: Repository<Entity>,
-    logger: Logger,
+    logger: Logger
   ) {
     this.logger = logger;
   }
@@ -68,14 +69,14 @@ export class BaseService<Entity extends BaseEntity> {
     const newRecords = await this.repository.save(
       oldRecords.map(
         (record) => {
-          const { updateTimestamp, ...recordData } = record;
+          const { updateTimestamp: _, ...recordData } = record;
           return {
             ...recordData,
             ...doc,
           } as DeepPartial<Entity>;
         },
-        { reload: true },
-      ),
+        { reload: true }
+      )
     );
     return this.postUpdate(newRecords, oldRecords, updateDto, options);
   }
@@ -85,7 +86,7 @@ export class BaseService<Entity extends BaseEntity> {
      * The ID of the user who perform the delete operation
      */
     userId: string,
-    options?: FindManyOptions<Entity>,
+    options?: FindManyOptions<Entity>
   ) {
     await this.preSoftDelete(userId, options);
     const deletedRecords = await this.update(
@@ -95,7 +96,7 @@ export class BaseService<Entity extends BaseEntity> {
         deleteTimestamp: new Date(),
         deleteUserId: userId,
       } as DeepPartial<Entity>,
-      options,
+      options
     );
     return this.postSoftDelete(deletedRecords, options);
   }
@@ -109,7 +110,7 @@ export class BaseService<Entity extends BaseEntity> {
         deleteTimestamp: null,
         deleteUserId: null,
       } as DeepPartial<Entity>,
-      options,
+      options
     );
     return this.postRestore(deletedRecords, options);
   }
@@ -122,7 +123,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _currentUser?: User,
+    _currentUser?: User
   ): Promise<CustomFindManyOptions<Entity>> {
     // TODO: Add WHERE, ORDER, LIMIT, OFFSET clause
     const { skip, take } = this.getPaginationProps(options);
@@ -144,7 +145,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _currentUser?: User,
+    _currentUser?: User
   ): Promise<FindOneOptions<Entity>> {
     return options;
   }
@@ -155,7 +156,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _currentUser?: User,
+    _currentUser?: User
   ): Promise<CustomFindManyOptions<Entity>> {
     const where = this.getFilterProps(options);
     return {
@@ -192,7 +193,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _options?: FindManyOptions<Entity>,
+    _options?: FindManyOptions<Entity>
   ): Promise<QueryDeepPartialEntity<Entity>> {
     return {
       ...updateDto,
@@ -210,7 +211,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _options?: FindManyOptions<Entity>,
+    _options?: FindManyOptions<Entity>
   ) {}
 
   protected async preRestore(
@@ -223,7 +224,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _options?: FindManyOptions<Entity>,
+    _options?: FindManyOptions<Entity>
   ) {}
 
   /* ---------- Post-processing functions ---------- */
@@ -235,10 +236,10 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _currentUser?: User,
+    _currentUser?: User
   ) {
     const { filters } = options;
-    const { page, pageSize, order, ...filterKeys } = filters ?? {};
+    const { page: _, pageSize: __, order, ...filterKeys } = filters ?? {};
 
     return {
       data,
@@ -264,7 +265,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _currentUser?: User,
+    _currentUser?: User
   ) {
     return data;
   }
@@ -275,7 +276,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _createDto: any,
+    _createDto: any
   ) {
     return record;
   }
@@ -286,7 +287,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _createDtos: any[],
+    _createDtos: any[]
   ) {
     return records;
   }
@@ -307,7 +308,7 @@ export class BaseService<Entity extends BaseEntity> {
      * This arg is not used in the base class,
      * but can be used in derived class
      */
-    _options?: FindManyOptions<Entity>,
+    _options?: FindManyOptions<Entity>
   ) {
     return newRecords;
   }
@@ -332,7 +333,7 @@ export class BaseService<Entity extends BaseEntity> {
   }
 
   private getOrderProps(
-    options: CustomFindManyOptions<Entity>,
+    options: CustomFindManyOptions<Entity>
   ): FindOptionsOrder<Entity> | undefined {
     const { filters, order } = options;
 
@@ -347,16 +348,16 @@ export class BaseService<Entity extends BaseEntity> {
   }
 
   private getFilterProps(
-    options: CustomFindManyOptions<Entity>,
+    options: CustomFindManyOptions<Entity>
   ): FindOptionsWhere<Entity> | FindOptionsWhere<Entity>[] | undefined {
     const { filters, where } = options;
 
-    const { page, pageSize, order, ...filterKeys } = filters ?? {};
+    const { page: _, pageSize: __, order: ___, ...filterKeys } = filters ?? {};
     const additionalWhere = Object.fromEntries(
       Object.entries(filterKeys).map(([key, value]) => [
         key,
         Raw((alias) => `LOWER(CAST("${alias}" AS TEXT)) LIKE '%${String(value).toLowerCase()}%'`),
-      ]),
+      ])
     ) as FindOptionsWhere<Entity>;
 
     if (Array.isArray(where)) {
@@ -370,13 +371,13 @@ export class BaseService<Entity extends BaseEntity> {
   }
 
   private async getPaginationResponse(
-    options: CustomFindManyOptions<Entity>,
+    options: CustomFindManyOptions<Entity>
   ): Promise<PaginationDto> {
     const { filters } = options;
     const page = filters?.page || 1;
     const pageSize = filters?.pageSize || 10;
     try {
-      const { take, skip, ...opts } = options;
+      const { take: _, skip: __, ...opts } = options;
       const total = await this.count(opts);
       const totalPage = Math.ceil(total / pageSize);
 

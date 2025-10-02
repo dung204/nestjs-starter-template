@@ -8,12 +8,10 @@
   "module": "src/main.ts",
   "scripts": {
     "build": "NODE_ENV=production bun run scripts/build.ts",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "NODE_ENV=development tsc && bun .",
     "start:dev": "NODE_ENV=development tsc-watch --onSuccess \"bun .\"",
     "start:debug": "NODE_ENV=development tsc-watch --onSuccess \"bun . --inspect\"",
     "start:prod": "NODE_ENV=production bun dist/main.js",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "bun test",
     "test:watch": "bun test --watch",
     "test:cov": "bun test --coverage",
@@ -46,12 +44,10 @@
     "typeorm-transactional": "^0.5.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.4",
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
-    "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^9.18.0",
     "@nestjs/testing": "^11.0.1",
-    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/bun": "^1.2.19",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.9",
@@ -59,23 +55,16 @@
     "@types/node": "^22.10.7",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
-    "eslint": "^9.18.0",
-    "eslint-config-prettier": "^10.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
-    "prettier": "^3.4.2",
     "supertest": "^7.0.0",
     "ts-loader": "^9.5.2",
     "tsc-watch": "^7.1.1",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript": "^5.7.3"
   },
   "lint-staged": {
-    "*.{js,ts,json,md}": [
-      "prettier --write"
-    ],
-    "*.{js,ts}": [
-      "eslint --fix"
+    "*": [
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
     ]
   },
   "trustedDependencies": [

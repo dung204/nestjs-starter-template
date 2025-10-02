@@ -47,7 +47,7 @@ export class UsersController {
   @Patch('/profile')
   async updateCurrentUserProfile(
     @CurrentUser() currentUser: User,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserDto
   ) {
     const user = await this.usersService.updateUserProfile({
       ...updateUserDto,

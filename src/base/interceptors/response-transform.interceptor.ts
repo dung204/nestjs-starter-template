@@ -1,6 +1,6 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Response } from 'express';
-import { Observable, map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable()
 export class ResponseTransformInterceptor implements NestInterceptor {
@@ -23,7 +23,7 @@ export class ResponseTransformInterceptor implements NestInterceptor {
           data: data,
           statusCode,
         };
-      }),
+      })
     );
   }
 }
