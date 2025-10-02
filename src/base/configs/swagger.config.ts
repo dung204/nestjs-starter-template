@@ -12,7 +12,7 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 
-import { IS_ADMIN_KEY } from '@/modules/auth/decorators/admin.decorator';
+import { ALLOW_ROLES_KEY } from '@/modules/auth/decorators/allow-roles.decorator';
 import { IS_PUBLIC_KEY } from '@/modules/auth/decorators/public.decorator';
 import { Role } from '@/modules/auth/enums/role.enum';
 
@@ -31,7 +31,7 @@ export function configSwagger(app: INestApplication) {
     for (const controller of controllers) {
       if (controller.metatype) {
         const isControllerPublic = Reflect.getMetadata(IS_PUBLIC_KEY, controller.metatype);
-        const isControllerAdmin = Reflect.getMetadata(IS_ADMIN_KEY, controller.metatype);
+        const controllerAllowRoles = Reflect.getMetadata(ALLOW_ROLES_KEY, controller.metatype);
         const controllerPath = Reflect.getMetadata(PATH_KEY, controller.metatype);
         const controllerResponses = Reflect.getMetadata(
           SWAGGER_API_RESPONSE_KEY,
@@ -54,7 +54,7 @@ export function configSwagger(app: INestApplication) {
 
         for (const method of methods) {
           const isRoutePublic = Reflect.getMetadata(IS_PUBLIC_KEY, controllerClass[method]);
-          const isRouteAdmin = Reflect.getMetadata(IS_ADMIN_KEY, controllerClass[method]);
+          const routeAllowRoles = Reflect.getMetadata(ALLOW_ROLES_KEY, controllerClass[method]);
           const apiOperation = Reflect.getMetadata(
             SWAGGER_API_OPERATION_KEY,
             controllerClass[method]
@@ -85,19 +85,26 @@ export function configSwagger(app: INestApplication) {
           if (isRoutePublic || isControllerPublic) continue;
 
           // Require authentication for routes that are not marked as @Public()
-          if (isRouteAdmin || isControllerAdmin) {
+          if (routeAllowRoles || controllerAllowRoles) {
+            const allowRoles = routeAllowRoles || controllerAllowRoles;
+
             if (apiOperation) {
               const { summary, ...apiOperationMetadata } = apiOperation;
+              const newSummary = `${summary?.trim() ?? ''}${allowRoles.length === Object.values(Role).length ? '' : ` (for ${allowRoles.join(', ')} only)`}`;
+
               ApiOperation({
-                summary: `${summary?.trim() ?? ''} (for ${Role.ADMIN} only)`,
+                summary: newSummary,
                 ...apiOperationMetadata,
               })(...methodDecoratorParams);
             }
-            ApiForbiddenResponse({
-              description: `User is not an \`${Role.ADMIN}\``,
-              ...controllerResponses?.['403'],
-              ...routeResponses?.['403'],
-            })(...methodDecoratorParams);
+
+            if (allowRoles.length !== 0) {
+              ApiForbiddenResponse({
+                description: `User's role is not in the following: ${allowRoles.map((role: Role) => `\`${role}\``)}`,
+                ...controllerResponses?.['403'],
+                ...routeResponses?.['403'],
+              })(...methodDecoratorParams);
+            }
           }
 
           ApiBearerAuth('JWT')(...methodDecoratorParams);

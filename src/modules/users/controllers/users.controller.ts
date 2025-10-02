@@ -14,8 +14,9 @@ import { IsNull, Not } from 'typeorm';
 
 import { ApiSuccessResponse } from '@/base/decorators';
 import { QueryDto } from '@/base/dtos';
-import { Admin } from '@/modules/auth/decorators/admin.decorator';
+import { AllowRoles } from '@/modules/auth/decorators/allow-roles.decorator';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
+import { Role } from '@/modules/auth/enums/role.enum';
 
 import { DeletedUserProfileDto, UpdateUserDto, UserProfileDto } from '../dtos/user.dtos';
 import { User } from '../entities/user.entity';
@@ -63,7 +64,7 @@ export class UsersController {
     schema: UserProfileDto,
     description: 'All user profiles retrieved successfully',
   })
-  @Admin()
+  @AllowRoles([Role.ADMIN])
   @Get('/')
   async findAllUsers(@Query() queryDto: QueryDto) {
     const { data: users, metadata } = await this.usersService.find({
@@ -84,7 +85,7 @@ export class UsersController {
     schema: UserProfileDto,
     description: 'All user profiles retrieved successfully',
   })
-  @Admin()
+  @AllowRoles([Role.ADMIN])
   @Get('/deleted')
   async findAllDeletedUsers(@Query() queryDto: QueryDto) {
     const { data: users, metadata } = await this.usersService.find({
@@ -108,7 +109,7 @@ export class UsersController {
   @ApiNoContentResponse({
     description: 'User deleted successfully',
   })
-  @Admin()
+  @AllowRoles([Role.ADMIN])
   @Delete('/delete/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@CurrentUser() currentUser: User, @Param('id') id: string) {
@@ -124,7 +125,7 @@ export class UsersController {
     schema: UserProfileDto,
     description: 'User restored successfully',
   })
-  @Admin()
+  @AllowRoles([Role.ADMIN])
   @Patch('/restore/:id')
   async restoreUser(@CurrentUser() currentUser: User, @Param('id') id: string) {
     return this.usersService.restore(currentUser.id, {

@@ -2,9 +2,9 @@ import { ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
+import { ALLOW_ROLES_KEY } from '@/modules/auth/decorators/allow-roles.decorator';
 import { User } from '@/modules/users/entities/user.entity';
 
-import { IS_ADMIN_KEY } from '../decorators/admin.decorator';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { Role } from '../enums/role.enum';
 
@@ -18,7 +18,8 @@ export class JwtGuard extends AuthGuard(['jwt']) {
       context.getHandler(),
       context.getClass(),
     ]);
-    const isAdmin = this.reflector.getAllAndOverride<boolean>(IS_ADMIN_KEY, [
+
+    const allowRoles = this.reflector.getAllAndOverride<Role[]>(ALLOW_ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
@@ -29,10 +30,12 @@ export class JwtGuard extends AuthGuard(['jwt']) {
 
     const isAuthenticated = await super.canActivate(context);
 
-    if (!!isAuthenticated && isAdmin) {
+    if (!!isAuthenticated && allowRoles) {
       const currentUser: User = context.switchToHttp().getRequest().user;
-      if (currentUser.account.role !== Role.ADMIN)
-        throw new ForbiddenException('This operation is only allowed for ADMIN.');
+      if (!allowRoles.includes(currentUser.account.role))
+        throw new ForbiddenException(
+          `This operation is only allowed for these roles: ${allowRoles.join(', ')}.`
+        );
     }
 
     return !!isAuthenticated;

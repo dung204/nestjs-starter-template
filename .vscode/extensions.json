@@ -1,8 +1,10 @@
 {
   "recommendations": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
     "EditorConfig.EditorConfig",
-    "Redis.redis-for-vscode"
+    "Redis.redis-for-vscode",
+    "biomejs.biome",
+    "ms-vsliveshare.vsliveshare",
+    "mhutchie.git-graph",
+    "YoavBls.pretty-ts-errors"
   ]
 }
