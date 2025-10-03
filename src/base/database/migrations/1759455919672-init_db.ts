@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class InitDb1753859207582 implements MigrationInterface {
-  name = 'InitDb1753859207582';
+export class InitDb1759455919672 implements MigrationInterface {
+  name = 'InitDb1759455919672';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
@@ -35,7 +35,8 @@ export class InitDb1753859207582 implements MigrationInterface {
                 "update_user_id" uuid,
                 "delete_user_id" uuid,
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-                "full_name" character varying(128),
+                "first_name" character varying(128),
+                "last_name" character varying(128),
                 "gender" "public"."Gender",
                 "account_id" uuid,
                 CONSTRAINT "REL_17a709b8b6146c491e6615c29d" UNIQUE ("account_id"),

@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Query,
-} from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Query } from '@nestjs/common';
 import { ApiNoContentResponse, ApiOperation } from '@nestjs/swagger';
 import { IsNull, Not } from 'typeorm';
 
@@ -18,44 +8,13 @@ import { AllowRoles } from '@/modules/auth/decorators/allow-roles.decorator';
 import { CurrentUser } from '@/modules/auth/decorators/current-user.decorator';
 import { Role } from '@/modules/auth/enums/role.enum';
 
-import { DeletedUserProfileDto, UpdateUserDto, UserProfileDto } from '../dtos/user.dtos';
+import { DeletedUserProfileDto, UserProfileDto } from '../dtos/user.dtos';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @ApiOperation({
-    summary: "Retrieve the current user's profile",
-  })
-  @ApiSuccessResponse({
-    schema: UserProfileDto,
-    description: 'User profile retrieved successfully',
-  })
-  @Get('/profile')
-  getCurrentUserProfile(@CurrentUser() user: User) {
-    return UserProfileDto.fromUser(user);
-  }
-
-  @ApiOperation({
-    summary: "Update the current user's profile",
-  })
-  @ApiSuccessResponse({
-    schema: UserProfileDto,
-    description: 'User profile updated successfully',
-  })
-  @Patch('/profile')
-  async updateCurrentUserProfile(
-    @CurrentUser() currentUser: User,
-    @Body() updateUserDto: UpdateUserDto
-  ) {
-    const user = await this.usersService.updateUserProfile({
-      ...updateUserDto,
-      id: currentUser.id,
-    });
-    return UserProfileDto.fromUser(user);
-  }
 
   @ApiOperation({
     summary: 'Retrieve all users',

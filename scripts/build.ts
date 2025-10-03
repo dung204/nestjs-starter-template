@@ -40,4 +40,4 @@ if (!result.success) {
   process.exit(1);
 }
 
-console.log('Built successfully!');
+console.log('✅ Built successfully!');

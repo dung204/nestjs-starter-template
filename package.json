@@ -17,6 +17,7 @@
     "test:cov": "bun test --coverage",
     "test:debug": "bun --inspect-brk --runInBand",
     "test:e2e": "bun test ./test/app.e2e-spec.ts",
+    "migration": "bun run scripts/migration.ts",
     "migration:generate": "bun run build && NODE_ENV=development bun run --bun typeorm -d ./dist/base/configs/postgres.config.js migration:generate -p",
     "migration:run": "bun run --bun typeorm -d ./dist/base/configs/postgres.config.js migration:run",
     "migration:revert": "bun run --bun typeorm -d ./dist/base/configs/postgres.config.js migration:revert",

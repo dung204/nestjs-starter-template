@@ -2,7 +2,8 @@ import { Role } from '@/modules/auth/enums/role.enum';
 import { Gender } from '@/modules/users/enums/gender.enum';
 
 export const SwaggerExamples = {
-  FULLNAME: 'John Doe',
+  FIRST_NAME: 'John',
+  LAST_NAME: 'Doe',
   EMAIL: 'email@example.com',
   PASSWORD: 'password@123456',
   UUID: '9efdce14-b81e-4d03-ad6e-cf95f64667fa',

@@ -36,11 +36,18 @@ export class UserProfileDto {
   role!: Role;
 
   @ApiProperty({
-    description: 'The full name of the user',
-    example: SwaggerExamples.FULLNAME,
+    description: 'The first name of the user',
+    example: SwaggerExamples.FIRST_NAME,
   })
   @Expose()
-  fullName!: string;
+  firstName!: string;
+
+  @ApiProperty({
+    description: 'The last name of the user',
+    example: SwaggerExamples.LAST_NAME,
+  })
+  @Expose()
+  lastName!: string;
 
   @ApiProperty({
     description: 'The gender of the user',
@@ -90,13 +97,22 @@ export class UpdateUserDto {
   id!: string;
 
   @ApiProperty({
-    description: 'The full name of the user',
-    example: SwaggerExamples.FULLNAME,
+    description: 'The first name of the user',
+    example: SwaggerExamples.FIRST_NAME,
     required: false,
   })
   @IsOptional()
   @IsString()
-  fullName?: string;
+  firstName?: string;
+
+  @ApiProperty({
+    description: 'The last name of the user',
+    example: SwaggerExamples.LAST_NAME,
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  lastName?: string;
 
   @ApiProperty({
     description: 'The gender of the user',

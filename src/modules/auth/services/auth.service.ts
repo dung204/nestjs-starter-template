@@ -62,7 +62,8 @@ export class AuthService extends BaseService<Account> {
       ...(await this.getTokens({ sub: user!.id })),
       user: {
         id: user!.id,
-        fullName: user!.fullName,
+        firstName: user!.firstName,
+        lastName: user!.lastName,
       },
     };
   }
@@ -113,7 +114,8 @@ export class AuthService extends BaseService<Account> {
       ...(await this.getTokens({ sub: userInfo.id })),
       user: {
         id: userInfo.id,
-        fullName: userInfo.fullName,
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
       },
     };
   }
@@ -143,7 +145,8 @@ export class AuthService extends BaseService<Account> {
       ...(await this.getTokens({ sub: userId })),
       user: {
         id: user.id,
-        fullName: user.fullName,
+        firstName: user.firstName,
+        lastName: user.lastName,
       },
     };
   }

@@ -47,11 +47,18 @@ class LoginUserPayload {
   id!: string;
 
   @ApiProperty({
-    description: 'The full name of the user',
-    example: SwaggerExamples.FULLNAME,
+    description: 'The first name of the user',
+    example: SwaggerExamples.FIRST_NAME,
     nullable: true,
   })
-  fullName!: string | null;
+  firstName!: string | null;
+
+  @ApiProperty({
+    description: 'The last name of the user',
+    example: SwaggerExamples.LAST_NAME,
+    nullable: true,
+  })
+  lastName!: string | null;
 }
 
 export class LoginSuccessDto {

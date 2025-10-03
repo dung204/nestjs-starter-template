@@ -21,7 +21,10 @@ export class User extends BaseEntity {
   account!: Account;
 
   @Column('varchar', { length: 128, nullable: true })
-  fullName: string | null = null;
+  firstName: string | null = null;
+
+  @Column('varchar', { length: 128, nullable: true })
+  lastName: string | null = null;
 
   @Column('enum', { enum: Gender, enumName: 'Gender', nullable: true })
   gender: Gender | null = null;
